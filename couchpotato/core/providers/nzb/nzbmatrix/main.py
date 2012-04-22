@@ -66,9 +66,18 @@ class NZBMatrix(NZBProvider, RSS):
                     title = self.getTextElement(nzb, "title")
                     if 'error' in title.lower(): continue
 
-                    id = int(self.getTextElement(nzb, "link").split('&')[0].partition('id=')[2])
-                    size = self.getTextElement(nzb, "description").split('<br /><b>')[2].split('> ')[1]
-                    date = str(self.getTextElement(nzb, "description").split('<br /><b>')[3].partition('Added:</b> ')[2])
+                    REPORT_NS = 'http://www.newzbin.com/DTD/2007/feeds/report/';
+
+                    # Add attributes to name
+                    try:
+                        for attr in nzb.find('{%s}attributes' % REPORT_NS):
+                            title += ' ' + attr.text
+                    except:
+                        pass
+
+                    id = int(self.getTextElement(nzb, '{%s}id' % REPORT_NS))
+                    size = str(int(self.getTextElement(nzb, '{%s}size' % REPORT_NS)) / 1024 / 1024) + ' mb'
+                    date = str(self.getTextElement(nzb, '{%s}postdate' % REPORT_NS))
 
                     new = {
                         'id': id,
