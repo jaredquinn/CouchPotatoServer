@@ -75,9 +75,14 @@ class NZBMatrix(NZBProvider, RSS):
                     except:
                         pass
 
-                    id = int(self.getTextElement(nzb, '{%s}id' % REPORT_NS))
-                    size = str(int(self.getTextElement(nzb, '{%s}size' % REPORT_NS)) / 1024 / 1024) + ' mb'
-                    date = str(self.getTextElement(nzb, '{%s}postdate' % REPORT_NS))
+                    id = self.getTextElement(nzb, '{%s}id' % REPORT_NS)
+                    if id != None id = int(id)
+
+                    size = self.getTextElement(nzb, '{%s}size' % REPORT_NS)
+                    if size != None size = (int(size) / 1024 / 1024) + ' mb'
+
+                    date = self.getTextElement(nzb, '{%s}postdate' % REPORT_NS)
+                    if date != None date = str(date)
 
                     new = {
                         'id': id,
